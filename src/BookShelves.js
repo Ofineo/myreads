@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import Book from './Book';
+import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
+import Book from './Book'
 
 class BookShelves extends Component {
     render(){
