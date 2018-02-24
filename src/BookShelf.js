@@ -17,7 +17,6 @@ class BookShelf extends Component {
                 <Book
                   key={book.id}
                   book={book}
-                  shelf={this.props.shelf}
                   updateShelf={(book, value) => {
                     this.updateShelf(book, value);
                   }}
