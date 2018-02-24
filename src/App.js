@@ -2,29 +2,49 @@ import React, { Component } from 'react';
 import { Route, Link } from 'react-router-dom';
 import * as BooksAPI from './BooksAPI';
 import './App.css';
-import BookShelves from './BookShelves';
+import BookShelf from './BookShelf';
 import SearchBooks from './SearchBooks';
 
 class BooksApp extends Component {
   state = {
-    books: [],
-    shelves: ["currentlyReading", "wantToRead", "read"]
-
-    /**
-     * TODO: Instead of using this state variable to keep track of which page
-     * we're on, use the URL in the browser's address bar. This will ensure that
-     * users can use the browser's back and forward buttons to navigate between
-     * pages, as well as provide a good URL they can bookmark and share.
-     */
+    currentlyReading: [],
+    wantToRead: [],
+    read: [],
   }
   componentDidMount() {
     BooksAPI.getAll()
       .then(response => {
-        console.log(response);
-        return this.setState({ books: response })
+
+        let currentlyReading, wantToRead, read;
+
+        currentlyReading = response.filter(book => {
+          if (book.shelf === "currentlyReading") return book;
+        });
+        wantToRead = response.filter(book => {
+          if (book.shelf === "wantToRead") return book;
+        });
+        read = response.filter(book => {
+          if (book.shelf === "read") return book;
+        });
+
+        return this.setState({
+          currentlyReading,
+          wantToRead,
+          read
+        })
       })
   }
-
+  updateShelf = (book, value) => {
+    BooksAPI.update(book, value)
+      .then(response => {
+        console.log('response', response, book, value);
+        this.setState(state => {
+          state[book.shelf].splice(state[book.shelf].findIndex(e => e === book), 1);
+          book.shelf = value;
+          state[value].push(book);
+        })
+      })
+  }
 
 
   render() {
@@ -39,7 +59,27 @@ class BooksApp extends Component {
                 <h1>MyReads</h1>
               </div>
               <div className="list-books-content">
-                  <BookShelves allBooks={this.state.books} shelves={this.state.shelves} />
+                <BookShelf
+                  shelf="currentlyReading"
+                  shelfBooks={this.state.currentlyReading}
+                  updateShelf={(book, value) => {
+                    this.updateShelf(book, value);
+                  }}
+                />
+                <BookShelf
+                  shelf="wantToRead"
+                  shelfBooks={this.state.wantToRead}
+                  updateShelf={(book, value) => {
+                    this.updateShelf(book, value);
+                  }}
+                />
+                <BookShelf
+                  shelf="read"
+                  shelfBooks={this.state.read}
+                  updateShelf={(book, value) => {
+                    this.updateShelf(book, value);
+                  }}
+                />
               </div>
               <div className="open-search">
                 <Link to="/search" >Add a book</Link>
@@ -54,5 +94,4 @@ class BooksApp extends Component {
     )
   }
 }
-
 export default BooksApp;
