@@ -10,8 +10,8 @@ class Book extends Component {
     bookImage = () => {
         return this.props.book.imageLinks ? this.props.book.imageLinks.smallThumbnail : 'http://via.placeholder.com/100x150'
     }
-    bookAuthor= ()=>{
-        return this.props.book.authors? this.props.book.authors :'Anonymous Author'
+    bookAuthor = () => {
+        return this.props.book.authors ? this.props.book.authors : 'Anonymous Author'
     }
 
 

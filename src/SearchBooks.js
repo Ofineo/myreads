@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import * as BooksAPI from './BooksAPI';
-import Book from './Book'
+import Book from './Book';
 
 class SearchBooks extends Component {
   state = {
@@ -9,7 +9,7 @@ class SearchBooks extends Component {
     foundBooks: {}
   }
 
-  componentDidMount(){
+  componentDidMount() {
     document.getElementById('search-box').focus();
   }
 
@@ -19,20 +19,24 @@ class SearchBooks extends Component {
   }
 
   updateQuery = (query) => {
-    this.setState({ query })
-    console.log(this.state.query.length);
+    this.setState(state => state.query = query)
+    console.log(this.state.query.length, this.state.query, query.length, query);
 
-    if(this.state.query.length >= 1){
-       BooksAPI.search(this.state.query)
-      .then(response => {
-        console.log(response);
-        this.setState({ foundBooks: response })
-      })
-      }else{
-        this.setState({ foundBooks: {} })
-      }
+    if (query.length > 0) {
+      BooksAPI.search(query)
+        .then(response => {
+          console.log(response);
+          if (response.error) {
+            this.setState({ foundBooks: {} });
+            document.getElementsByClassName('books-grid')[0].textContent = 'Sorry no books found';
+          } else {
+            this.setState({ foundBooks: response });
+          }
+        })
+    } else {
+      this.setState({ foundBooks: {} });
     }
-  
+  }
 
   render() {
     return (

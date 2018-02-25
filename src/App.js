@@ -88,11 +88,11 @@ class BooksApp extends Component {
           )} />
         <Route
           path="/search"
-          render={()=>(
-            <SearchBooks 
-            updateShelf={(book, value) => {
-              this.updateShelf(book, value);
-            }}            
+          render={() => (
+            <SearchBooks
+              updateShelf={(book, value) => {
+                this.updateShelf(book, value);
+              }}
             />
           )}
         />
