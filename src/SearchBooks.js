@@ -20,7 +20,6 @@ class SearchBooks extends Component {
 
   updateQuery = (query) => {
     this.setState(state => state.query = query)
-    console.log(this.state.query.length, this.state.query, query.length, query);
 
     if (query.length > 0) {
       BooksAPI.search(query)
@@ -30,17 +29,31 @@ class SearchBooks extends Component {
             this.setState({ foundBooks: {} });
             document.getElementsByClassName('books-grid')[0].textContent = 'Sorry no books found';
           } else {
-            this.setState({ foundBooks: response });
+            this.ShowBooks(response);
           }
         })
     } else {
       this.setState({ foundBooks: {} });
     }
+
+  }
+
+  ShowBooks = (response) => {
+    let myResponse = response.map(book => {
+      if (this.props.allShelves.find((e) => e.id === book.id)) {
+        let shelf = this.props.allShelves.find((e) => e.id === book.id);
+        book.shelf = shelf.shelf;
+      } else {
+        book.shelf = 'none';
+      }
+      return book;
+    });
+    this.setState({ foundBooks: myResponse });
   }
 
   render() {
     return (
-      <div className="search-books">
+      <div className="search-books" >
         <div className="search-books-bar">
           <Link className="close-search" to="/"></Link>
           <div className="search-books-input-wrapper">
@@ -57,6 +70,7 @@ class SearchBooks extends Component {
         </div>
         <div className="search-books-results">
           <ol className="books-grid">
+
             {this.state.foundBooks.length > 0 && (this.state.foundBooks.map(book => (
               <Book
                 key={book.id}

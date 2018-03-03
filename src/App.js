@@ -37,11 +37,10 @@ class BooksApp extends Component {
   updateShelf = (book, value) => {
     BooksAPI.update(book, value)
       .then(response => {
-        console.log('response', response, book, value);
+        console.log('response', response, book.shelf, value);
         this.setState(state => {
           state[book.shelf].splice(state[book.shelf].findIndex(e => e === book), 1);
-          book.shelf = value;
-          state[value].push(book);
+          if (value != 'none') state[value].push(book);
         })
       })
   }
@@ -93,6 +92,10 @@ class BooksApp extends Component {
               updateShelf={(book, value) => {
                 this.updateShelf(book, value);
               }}
+              allShelves={this.state.currentlyReading.concat(this.state.read, this.state.wantToRead)}
+              currentlyReadingShelf={this.state.currentlyReading}
+              readShelf={this.state.read}
+              wantToReadShelf={this.state.wantToRead}
             />
           )}
         />
