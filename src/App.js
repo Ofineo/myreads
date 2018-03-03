@@ -34,17 +34,18 @@ class BooksApp extends Component {
         })
       })
   }
+
   updateShelf = (book, value) => {
     BooksAPI.update(book, value)
       .then(response => {
-        console.log('response', response, book.shelf, value);
         this.setState(state => {
-          state[book.shelf].splice(state[book.shelf].findIndex(e => e === book), 1);
-          if (value != 'none') state[value].push(book);
+          state[book.shelf] = state[book.shelf].filter((bk) => {
+            if (bk.id != book.id) return bk;
+          })
+          if (value != 'none') state[value] = state[value].concat(book);
         })
       })
   }
-
 
   render() {
     return (
@@ -93,9 +94,6 @@ class BooksApp extends Component {
                 this.updateShelf(book, value);
               }}
               allShelves={this.state.currentlyReading.concat(this.state.read, this.state.wantToRead)}
-              currentlyReadingShelf={this.state.currentlyReading}
-              readShelf={this.state.read}
-              wantToReadShelf={this.state.wantToRead}
             />
           )}
         />

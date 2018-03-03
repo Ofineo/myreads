@@ -24,7 +24,6 @@ class SearchBooks extends Component {
     if (query.length > 0) {
       BooksAPI.search(query)
         .then(response => {
-          console.log(response);
           if (response.error) {
             this.setState({ foundBooks: {} });
             document.getElementsByClassName('books-grid')[0].textContent = 'Sorry no books found';
